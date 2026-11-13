@@ -10,5 +10,6 @@ This document contains definitions of technical terms encountered while building
 ## Addressing and Links
 | Term | Description |
 |---|---|
+| Gateway | Router's address on a network. A device sends traffic to its gateway when the destination is outside its own network |
 | Management IP | The IP address given to a switch itself (not to the devices plugged into it) so an admin can connect to it remotely, for example over SSH |
 | WAN link | Wide Area Network link; the connection between routers at different sites. Each WAN link gets its own small subnet, with one address for each router on the cable |
