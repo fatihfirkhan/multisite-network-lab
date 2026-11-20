@@ -14,7 +14,7 @@ line console 0
  logging sync
  exit
 end
-write memory
+write
 ```
 
 | Command | Description |
@@ -29,4 +29,4 @@ write memory
 | `logging sync` | Stops system messages from interrupting a command while it is being typed |
 | `exit` | Goes back one level (here, from the console line settings to global configuration mode) |
 | `end` | Returns directly to privileged mode from any configuration level |
-| `write memory` | Saves the running config to the startup config so it survives a restart |
+| `write` | Saves the running config to the startup config so it survives a restart |
