@@ -50,7 +50,7 @@ interface range fa0/2-3
 interface range fa0/4-5
  switchport mode access
  switchport access vlan 20
-interface range fa0/6-7
+interface range fa0/6
  switchport mode access
  switchport access vlan 30
 interface fa0/1
