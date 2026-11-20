@@ -31,7 +31,7 @@ write
 | `end` | Returns directly to privileged mode from any configuration level |
 | `write` | Saves the running config to the startup config so it survives a restart |
 
-## Switch VLAN Setup (HQ-SW1)
+## Switch VLAN Setup
 Applied to HQ-SW1. BR-SW1 uses the same commands with VLAN 40 (Staff) and VLAN 50 (Servers).
 
 ```
