@@ -30,3 +30,47 @@ write
 | `exit` | Goes back one level (here, from the console line settings to global configuration mode) |
 | `end` | Returns directly to privileged mode from any configuration level |
 | `write` | Saves the running config to the startup config so it survives a restart |
+
+## Switch VLAN Setup (HQ-SW1)
+Applied to HQ-SW1. BR-SW1 uses the same commands with VLAN 40 (Staff) and VLAN 50 (Servers).
+
+```
+enable
+config terminal
+vlan 10
+ name Staff
+vlan 20
+ name Servers
+vlan 30
+ name Guest
+ exit
+interface range fa0/2-3
+ switchport mode access
+ switchport access vlan 10
+interface range fa0/4-5
+ switchport mode access
+ switchport access vlan 20
+interface range fa0/6-7
+ switchport mode access
+ switchport access vlan 30
+interface fa0/1
+ switchport mode trunk
+ switchport trunk allowed vlan 10,20,30
+end
+write
+```
+
+`enable`, `configure terminal`, `exit`, `end` and `write memory` work as described in Basic Device Setup.
+
+| Command | Description |
+|---|---|
+| `vlan 10` | Creates VLAN 10 on the switch and enters its settings |
+| `name Staff` | Gives the VLAN a readable name |
+| `interface range fa0/2-3` | Selects several ports at once so they can be configured together |
+| `switchport mode access` | Sets the port to carry a single VLAN, for end devices |
+| `switchport access vlan 10` | Assigns the port to VLAN 10 |
+| `interface fa0/1` | Selects a single port (here, the port toward the router) |
+| `switchport mode trunk` | Sets the port to carry multiple VLANs over one cable |
+| `switchport trunk allowed vlan 10,20,30` | Limits the trunk to only the listed VLANs |
+| `show vlan brief` | Lists the VLANs and which ports belong to each |
+| `show interfaces trunk` | Shows which ports are trunks and which VLANs they carry |
