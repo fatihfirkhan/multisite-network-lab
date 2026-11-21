@@ -17,7 +17,7 @@ This document contains definitions of technical terms encountered while building
 ## Routing
 | Term | Description |
 |---|---|
-| Interface | A physical port on a router or switch where a cable plugs in. On a router, each interface has its own IP address |
+| Interface | Physical ports on a router or switch where a cable plugs in. On a router, each interface has its own IP address |
 | Subinterface | A virtual interface created on a physical interface (for example `Gi0/0/0.10`). One cable acts like several interfaces, each with its own IP address |
 | Inter-VLAN routing | Letting devices in different VLANs communicate through a router |
 | Encapsulation | Wrapping data with extra information (a header) so it can be delivered correctly. For VLANs, the extra information is the VLAN tag |
