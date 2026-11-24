@@ -75,7 +75,7 @@ write
 | `show vlan brief` | Lists the VLANs and which ports belong to each |
 | `show interfaces trunk` | Shows which ports are trunks and which VLANs they carry |
 
-## Inter-VLAN Routing (HQ-R1)
+## Inter-VLAN Routing
 Router-on-a-stick: one subinterface per VLAN on the trunk port. BR-R1 uses the same commands with VLAN 40 and 50.
 
 ```
