@@ -1,7 +1,7 @@
 BR-R1#show running-config
 Building configuration...
 
-Current configuration : 757 bytes
+Current configuration : 1228 bytes
 !
 version 17.6.3
 service timestamps log datetime msec
@@ -15,7 +15,12 @@ hostname BR-R1
 enable secret 5 $1$mERr$kIaRYKzyfo/t9/m6Qa5JA1
 !
 !
+ip dhcp excluded-address 192.168.40.1 192.168.40.49
+ip dhcp excluded-address 192.168.40.201 192.168.40.254
 !
+ip dhcp pool BR-STAFF
+ network 192.168.40.0 255.255.255.0
+ default-router 192.168.40.1
 !
 !
 !
@@ -44,9 +49,20 @@ spanning-tree mode pvst
 !
 !
 interface GigabitEthernet0/0/0
+ description Trunk to BR-SW1
  no ip address
  duplex auto
  speed auto
+!
+interface GigabitEthernet0/0/0.40
+ description Staff VLAN
+ encapsulation dot1Q 40
+ ip address 192.168.40.1 255.255.255.0
+!
+interface GigabitEthernet0/0/0.50
+ description Servers VLAN
+ encapsulation dot1Q 50
+ ip address 192.168.50.1 255.255.255.0
 !
 interface GigabitEthernet0/0/1
  no ip address
