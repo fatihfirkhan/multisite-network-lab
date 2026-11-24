@@ -110,3 +110,30 @@ interface gi0/0/0.30
 | `show ip interface brief` | Lists interfaces with their IP address and status |
 | `show ip route` | Shows the networks the router knows how to reach |
 | `show cdp neighbors` | Shows directly connected Cisco devices and the ports they connect to |
+
+## DHCP
+The router hands out addresses to PCs in the Staff and Guest VLANs. Servers keep static addresses. BR-R1 uses the same commands for VLAN 40 only, with pool `BR-STAFF`.
+
+```
+ip dhcp excluded-address 192.168.10.1 192.168.10.49
+ip dhcp excluded-address 192.168.10.201 192.168.10.254
+ip dhcp excluded-address 192.168.30.1 192.168.30.49
+ip dhcp excluded-address 192.168.30.201 192.168.30.254
+ip dhcp pool HQ-STAFF
+ network 192.168.10.0 255.255.255.0
+ default-router 192.168.10.1
+ exit
+ip dhcp pool HQ-GUEST
+ network 192.168.30.0 255.255.255.0
+ default-router 192.168.30.1
+ exit
+```
+
+| Command | Description |
+|---|---|
+| `ip dhcp excluded-address 192.168.10.1 192.168.10.49` | Reserves a range of addresses so DHCP never hands them out (gateway, servers, network devices) |
+| `ip dhcp pool HQ-STAFF` | Creates a DHCP pool with a name and enters its settings |
+| `network 192.168.10.0 255.255.255.0` | Sets the subnet the pool gives addresses from |
+| `default-router 192.168.10.1` | Sets the default gateway given to devices |
+| `show ip dhcp binding` | Lists the addresses handed out and which device received each |
+| `show ip dhcp pool` | Shows each pool's address range and how many addresses are in use |
