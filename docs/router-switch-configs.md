@@ -74,3 +74,39 @@ write
 | `switchport trunk allowed vlan 10,20,30` | Limits the trunk to only the listed VLANs |
 | `show vlan brief` | Lists the VLANs and which ports belong to each |
 | `show interfaces trunk` | Shows which ports are trunks and which VLANs they carry |
+
+## Inter-VLAN Routing (HQ-R1)
+Router-on-a-stick: one subinterface per VLAN on the trunk port. BR-R1 uses the same commands with VLAN 40 and 50.
+
+```
+interface gi0/0/0
+ description Trunk to HQ-SW1
+ no shutdown
+ exit
+interface gi0/0/0.10
+ description Staff VLAN
+ encapsulation dot1Q 10
+ ip address 192.168.10.1 255.255.255.0
+ exit
+interface gi0/0/0.20
+ description Servers VLAN
+ encapsulation dot1Q 20
+ ip address 192.168.20.1 255.255.255.0
+ exit
+interface gi0/0/0.30
+ description Guest VLAN
+ encapsulation dot1Q 30
+ ip address 192.168.30.1 255.255.255.0
+ exit
+```
+
+| Command | Description |
+|---|---|
+| `description Trunk to HQ-SW1` | Adds a label to the interface for documentation |
+| `no shutdown` | Turns the interface on |
+| `interface gi0/0/0.10` | Creates subinterface 10 on the physical port |
+| `encapsulation dot1Q 10` | Sets the subinterface to handle traffic tagged with VLAN 10 |
+| `ip address 192.168.10.1 255.255.255.0` | Sets the router's address in the VLAN, which is the gateway for its devices |
+| `show ip interface brief` | Lists interfaces with their IP address and status |
+| `show ip route` | Shows the networks the router knows how to reach |
+| `show cdp neighbors` | Shows directly connected Cisco devices and the ports they connect to |
