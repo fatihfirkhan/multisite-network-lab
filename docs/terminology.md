@@ -13,6 +13,9 @@ This document contains definitions of technical terms encountered while building
 | Gateway | Router's address on a network. A device sends traffic to its gateway when the destination is outside its own network |
 | Management IP | The IP address given to a switch itself (not to the devices plugged into it) so an admin can connect to it remotely, for example over SSH |
 | WAN link | Wide Area Network link; the connection between routers at different sites. Each WAN link gets its own small subnet, with one address for each router on the cable |
+| DHCP | Dynamic Host Configuration Protocol; automatically gives devices an IP address, subnet mask, and default gateway when they join a network |
+| DHCP pool | The range of addresses a DHCP server can hand out for a network, plus the settings given with them (such as the gateway) |
+| Lease | The length of time a device may keep the address DHCP gave it. The device renews it or gives it back when the time is up |
 
 ## Routing
 | Term | Description |
