@@ -1,7 +1,7 @@
-HQ-R1#show running-config
+HQ-R1#show running-conf
 Building configuration...
 
-Current configuration : 1545 bytes
+Current configuration : 1873 bytes
 !
 version 17.6.3
 service timestamps log datetime msec
@@ -75,7 +75,8 @@ interface GigabitEthernet0/0/0.30
  ip address 192.168.30.1 255.255.255.0
 !
 interface GigabitEthernet0/0/1
- no ip address
+ description Link to ISP-R1
+ ip address 10.0.0.1 255.255.255.252
  duplex auto
  speed auto
 !
@@ -88,6 +89,16 @@ interface GigabitEthernet0/0/3
  no ip address
  duplex auto
  speed auto
+!
+router ospf 1
+ router-id 1.1.1.1
+ log-adjacency-changes
+ passive-interface default
+ no passive-interface GigabitEthernet0/0/1
+ network 192.168.10.0 0.0.0.255 area 0
+ network 192.168.20.0 0.0.0.255 area 0
+ network 192.168.30.0 0.0.0.255 area 0
+ network 10.0.0.0 0.0.0.3 area 0
 !
 ip classless
 !
@@ -109,6 +120,3 @@ line vty 0 4
 !
 !
 end
-
-
-HQ-R1# 
