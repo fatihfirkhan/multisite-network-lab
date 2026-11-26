@@ -26,3 +26,10 @@ This document contains definitions of technical terms encountered while building
 | Encapsulation | Wrapping data with extra information (a header) so it can be delivered correctly. For VLANs, the extra information is the VLAN tag |
 | 802.1Q (dot1q) | The standard for tagging traffic with its VLAN number over a trunk. `encapsulation dot1q 10` sets a subinterface to handle VLAN 10 |
 | Router-on-a-stick | Inter-VLAN routing over one trunk cable. The router has one subinterface per VLAN, and each subinterface's IP is that VLAN's gateway |
+| Static routing | Routes typed in by hand on each router |
+| Dynamic routing | Routers learn routes automatically from each other |
+| OSPF | Open Shortest Path First; a dynamic routing protocol where routers share their networks and pick the shortest path to each |
+| router id | Unique name for router in OSPF, written like an IP address |
+| Area | A group of routers that share the same OSPF map. Small networks use one area, and area 0 is the main one |
+| Passive interface | An interface that does not send OSPF messages, used for networks with only end devices. Its network is still advertised |
+| Wildcard mask | The inverse of a subnet mask, used in OSPF `network` commands. `0.0.0.255` matches a /24 network |
