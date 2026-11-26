@@ -137,3 +137,70 @@ ip dhcp pool HQ-GUEST
 | `default-router 192.168.10.1` | Sets the default gateway given to devices |
 | `show ip dhcp binding` | Lists the addresses handed out and which device received each |
 | `show ip dhcp pool` | Shows each pool's address range and how many addresses are in use |
+
+## WAN Links and OSPF
+Sets the WAN link IP, then turns on OSPF so routers learn each other's networks automatically. BR-R1 use the same commands with their own values (see the table after the commands).
+
+HQ-R1
+```
+int gi0/0/1
+ desc Link to ISP-R1
+ ip addr 10.0.0.1 255.255.255.252
+ no shutdown
+ exit
+router ospf 1
+ router-id 1.1.1.1
+ passive-interface default
+ no passive-interface gi0/0/1
+ network 192.168.10.0 0.0.0.255 area 0
+ network 192.168.20.0 0.0.0.255 area 0
+ network 192.168.30.0 0.0.0.255 area 0
+ network 10.0.0.0 0.0.0.3 area 0
+```
+
+ISP-R1
+```
+conf terminal
+int gi0/0/0
+ description Link to HQ-R1
+ ip address 10.0.0.2 255.255.255.252
+ no shutdown
+ exit
+int gi0/0/1
+ desc Link to BR-R1
+ ip address 10.0.0.5 255.255.255.252
+ no shutdown
+ exit
+int gi0/0/2
+ desc Link to Internet-SRV
+ ip addr 203.0.113.1 255.255.255.0
+ no shutdown
+ exit
+conf terminal
+router ospf 1
+ router-id 2.2.2.2
+ passive-interface default
+ no passive-interface gi0/0/0
+ no passive-interface gi0/0/1
+ network 10.0.0.0 0.0.0.3 area 0
+ network 10.0.0.4 0.0.0.3 area 0
+ network 203.0.113.0 0.0.0.255 area 0
+ end
+```
+
+| Command | Description |
+|---|---|
+| `ip address 10.0.0.1 255.255.255.252` | Sets the interface's IP address and subnet mask |
+| `router ospf 1` | Starts OSPF. The `1` is a local ID number and does not need to match other routers |
+| `router-id 1.1.1.1` | Sets the router's unique name in OSPF |
+| `passive-interface default` | Stops the router from sending OSPF messages on every interface |
+| `no passive-interface gi0/0/1` | Allows OSPF messages on the link to the next router |
+| `network 192.168.10.0 0.0.0.255 area 0` | Turns on OSPF for interfaces in that range and advertises the network to other routers |
+| `show ip ospf neighbor` | Lists neighbor routers and their state |
+| `show ip route ospf` | Shows only the routes learned through OSPF |
+
+| Router | WAN interface IPs | Router ID | Networks advertised |
+|---|---|---|---|
+| HQ-R1 | Gi0/0/1: 10.0.0.1/30 | 1.1.1.1 | 192.168.10.0, 192.168.20.0, 192.168.30.0, 10.0.0.0/30 |
+| ISP-R1 | Gi0/0/0: 10.0.0.2/30, Gi0/0/1: 10.0.0.5/30, Gi0/0/2: 203.0.113.1/24 | 2.2.2.2 | 10.0.0.0/30, 10.0.0.4/30, 203.0.113.0/24 |
+| BR-R1 | Gi0/0/1: 10.0.0.6/30 | 3.3.3.3 | 192.168.40.0, 192.168.50.0, 10.0.0.4/30 |
