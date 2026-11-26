@@ -1,7 +1,7 @@
-ISP-R1#show running-config
+ISP-R1#show running-conf
 Building configuration...
 
-Current configuration : 758 bytes
+Current configuration : 1188 bytes
 !
 version 17.6.3
 service timestamps log datetime msec
@@ -44,17 +44,20 @@ spanning-tree mode pvst
 !
 !
 interface GigabitEthernet0/0/0
- no ip address
+ description Link to HQ-R1
+ ip address 10.0.0.2 255.255.255.252
  duplex auto
  speed auto
 !
 interface GigabitEthernet0/0/1
- no ip address
+ description Link to BR-R1
+ ip address 10.0.0.5 255.255.255.252
  duplex auto
  speed auto
 !
 interface GigabitEthernet0/0/2
- no ip address
+ description Link to Internet-SRV
+ ip address 203.0.113.1 255.255.255.0
  duplex auto
  speed auto
 !
@@ -62,6 +65,16 @@ interface GigabitEthernet0/0/3
  no ip address
  duplex auto
  speed auto
+!
+router ospf 1
+ router-id 2.2.2.2
+ log-adjacency-changes
+ passive-interface default
+ no passive-interface GigabitEthernet0/0/0
+ no passive-interface GigabitEthernet0/0/1
+ network 10.0.0.0 0.0.0.3 area 0
+ network 10.0.0.4 0.0.0.3 area 0
+ network 203.0.113.0 0.0.0.255 area 0
 !
 ip classless
 !
