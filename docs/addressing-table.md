@@ -70,3 +70,9 @@
 | HQ-R1 | 1.1.1.1 |
 | ISP-R1 | 2.2.2.2 |
 | BR-R1 | 3.3.3.3 |
+
+## NAT
+| Router | Inside interfaces | Outside interface | Translated to |
+|---|---|---|---|
+| HQ-R1 | Gi0/0/0.10, .20, .30 | Gi0/0/1 | 10.0.0.1 |
+| BR-R1 | Gi0/0/0.40, .50 | Gi0/0/1 | 10.0.0.6 |
