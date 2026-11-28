@@ -36,3 +36,10 @@ Records the tests run after each phase of the lab, with expected and actual resu
 | 3 | HQ-PC-Staff1 | BR-SRV1 (192.168.50.10) | Success | Success | Pass |
 | 4 | BR-PC-Staff1 | HQ-SRV1 (192.168.20.10) | Success | Success | Pass |
 | 5 | HQ-PC-Staff1 | Internet-SRV (203.0.113.10) | Success (before NAT) | Success | Pass |
+
+## Phase 6: NAT
+| # | From | To | Expected | Actual | Result |
+|---|---|---|---|---|---|
+| 1 | HQ-PC-Staff1 | Internet-SRV (203.0.113.10) | Success; translation table shows 10.0.0.1 | Success | Pass |
+| 2 | BR-PC-Staff1 | Internet-SRV (203.0.113.10) | Success; translation table shows 10.0.0.6 | Success | Pass |
+| 3 | HQ-PC-Staff1 | BR-SRV1 (192.168.50.10) | Success; no NAT entry created | Success | Pass |
