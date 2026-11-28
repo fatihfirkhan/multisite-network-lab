@@ -33,3 +33,14 @@ This document contains definitions of technical terms encountered while building
 | Area | A group of routers that share the same OSPF map. Small networks use one area, and area 0 is the main one |
 | Passive interface | An interface that does not send OSPF messages, used for networks with only end devices. Its network is still advertised |
 | Wildcard mask | The inverse of a subnet mask, used in OSPF `network` commands. `0.0.0.255` matches a /24 network |
+
+## NAT
+| Term | Description |
+|---|---|
+| Private address | An address range reserved for internal networks (such as 192.168.0.0/16) that cannot be used on the internet |
+| NAT | Network Address Translation; a router changes the address in traffic as it passes through, usually swapping a private address for a public one |
+| PAT (NAT overload) | NAT where many devices share one address. The router tells their traffic apart using port numbers |
+| Inside local | A device's real private address |
+| Inside global | The address the outside world sees for that device |
+| Inside / outside interface | Inside faces the company's own network. Outside faces the ISP |
+| ACL | Access Control List; a list of permit and deny rules that match traffic |
