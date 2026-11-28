@@ -205,7 +205,7 @@ router ospf 1
 | ISP-R1 | Gi0/0/0: 10.0.0.2/30, Gi0/0/1: 10.0.0.5/30, Gi0/0/2: 203.0.113.1/24 | 2.2.2.2 | 10.0.0.0/30, 10.0.0.4/30, 203.0.113.0/24 |
 | BR-R1 | Gi0/0/1: 10.0.0.6/30 | 3.3.3.3 | 192.168.40.0, 192.168.50.0, 10.0.0.4/30 |
 
-## NAT (HQ-R1)
+## NAT
 PAT (NAT overload): PCs share the router's WAN address when reaching the Internet server. Traffic between the company's own sites is not translated. BR-R1 uses the same commands with its own interfaces (Gi0/0/0.40 and .50 inside, Gi0/0/1 outside).
 
 HQ-R1
@@ -240,3 +240,59 @@ ip nat inside source list NAT-TRAFFIC int gi0/0/1 overload
 | `show ip nat translations` | Lists the active translations |
 | `show ip nat statistics` | Shows the inside and outside interfaces and translation counts |
 | `clear ip nat translation *` | Removes all current translations |
+
+## ACL
+Isolates Guests from company networks and limits Branch Staff to servers and the internet.
+
+**Policy**
+- Guests are isolated from all company networks because they are untrusted devices, but can reach the internet.
+- Branch workstations can reach servers and the internet, but not HQ workstations or the guest network, to limit how far a compromised PC could spread.
+
+### HQ-R1 (Guest isolation)
+```
+ip access-list extended GUEST-IN
+ permit udp any eq bootpc any eq bootps
+ permit ip 192.168.30.0 0.0.0.255 host 192.168.30.1
+ deny ip 192.168.30.0 0.0.0.255 192.168.0.0 0.0.255.255
+ permit ip 192.168.30.0 0.0.0.255 any
+ exit
+interface gi0/0/0.30
+ ip access-group GUEST-IN in
+```
+
+| Command | Description |
+|---|---|
+| `ip access-list extended GUEST-IN` | Creates a named list of rules. Extended means rules can match source, destination and port |
+| `permit udp any eq bootpc any eq bootps` | Allows DHCP requests, so Guests still get an address |
+| `permit ip 192.168.30.0 0.0.0.255 host 192.168.30.1` | Allows Guests to reach their own gateway |
+| `deny ip 192.168.30.0 0.0.0.255 192.168.0.0 0.0.255.255` | Blocks Guests from every other 192.168.x.x network |
+| `permit ip 192.168.30.0 0.0.0.255 any` | Allows Guests to everything else, such as the internet |
+| `ip access-group GUEST-IN in` | Turns the list on for traffic entering from that VLAN |
+| `show access-lists` | Shows the rules and how many times each one matched |
+
+### BR-R1 (Branch Staff)
+```
+ip access-list extended BR-STAFF-IN
+ permit udp any eq bootpc any eq bootps
+ permit ip 192.168.40.0 0.0.0.255 host 192.168.40.1
+ permit ip 192.168.40.0 0.0.0.255 192.168.50.0 0.0.0.255
+ permit ip 192.168.40.0 0.0.0.255 192.168.20.0 0.0.0.255
+ deny ip 192.168.40.0 0.0.0.255 192.168.0.0 0.0.255.255
+ permit ip 192.168.40.0 0.0.0.255 any
+ exit
+interface gi0/0/0.40
+ ip access-group BR-STAFF-IN in
+```
+
+| Rule | Description |
+|---|---|
+| `permit udp any eq bootpc any eq bootps` | Allows DHCP requests |
+| `permit ip 192.168.40.0 0.0.0.255 host 192.168.40.1` | Allows Branch Staff to reach their gateway |
+| `permit ip 192.168.40.0 0.0.0.255 192.168.50.0 0.0.0.255` | Allows Branch Staff to reach Branch servers |
+| `permit ip 192.168.40.0 0.0.0.255 192.168.20.0 0.0.0.255` | Allows Branch Staff to reach HQ servers |
+| `deny ip 192.168.40.0 0.0.0.255 192.168.0.0 0.0.255.255` | Blocks all other company networks (HQ Staff and Guest) |
+| `permit ip 192.168.40.0 0.0.0.255 any` | Allows everything else, such as the internet |
+
+Rules are checked from top to bottom and the first match wins, so the `permit` lines for servers must come before the `deny`.
+
+ACLs are stateless, so blocked traffic is blocked in both directions when replies are filtered.
