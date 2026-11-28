@@ -43,3 +43,20 @@ Records the tests run after each phase of the lab, with expected and actual resu
 | 1 | HQ-PC-Staff1 | Internet-SRV (203.0.113.10) | Success; translation table shows 10.0.0.1 | Success | Pass |
 | 2 | BR-PC-Staff1 | Internet-SRV (203.0.113.10) | Success; translation table shows 10.0.0.6 | Success | Pass |
 | 3 | HQ-PC-Staff1 | BR-SRV1 (192.168.50.10) | Success; no NAT entry created | Success | Pass |
+
+## Phase 7: ACLs
+| # | From | To | Expected | Actual | Result |
+|---|---|---|---|---|---|
+| 1 | HQ-PC-Guest1 | DHCP request | Gets a 192.168.30.x address | Received a 192.168.30.x address | Pass |
+| 2 | HQ-PC-Guest1 | HQ-SRV1 (192.168.20.10) | Fail | Destination host unreachable from gateway (100% loss) | Pass |
+| 3 | HQ-PC-Guest1 | HQ-PC-Staff1 (192.168.10.50) | Fail | Destination host unreachable from gateway (100% loss) | Pass |
+| 4 | HQ-PC-Guest1 | BR-SRV2 (192.168.50.11) | Fail | Destination host unreachable from gateway (100% loss) | Pass |
+| 5 | HQ-PC-Guest1 | Internet-SRV (203.0.113.10) | Success | 4 of 4 replies | Pass |
+| 6 | HQ-PC-Staff1 | HQ-SRV1 (192.168.20.10) | Success | Replies received | Pass |
+| 7 | BR-PC-Staff1 | DHCP request | Gets a 192.168.40.x address | Received a 192.168.40.x address (after fixing the ACL, see lessons learned) | Pass |
+| 8 | BR-PC-Staff1 | BR-SRV1 (192.168.50.10) | Success | Replies received | Pass |
+| 9 | BR-PC-Staff1 | HQ-SRV1 and HQ-SRV2 (192.168.20.10, .11) | Success | 4 of 4 replies from .10, 3 of 4 from .11 (first request timed out while the address was learned) | Pass |
+| 10 | BR-PC-Staff1 | HQ-PC-Staff1 (192.168.10.50) | Fail | Destination host unreachable from gateway (100% loss) | Pass |
+| 11 | BR-PC-Staff1 | HQ-PC-Guest1 (192.168.30.50) | Fail | Destination host unreachable from gateway (100% loss) | Pass |
+| 12 | BR-PC-Staff1 | Internet-SRV (203.0.113.10) | Success | 4 of 4 replies | Pass |
+| 13 | HQ-PC-Staff1 | HQ-PC-Guest1 | Fail (reply is blocked) | Request timed out (100% loss) | Pass |
