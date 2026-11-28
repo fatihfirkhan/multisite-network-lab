@@ -204,3 +204,39 @@ router ospf 1
 | HQ-R1 | Gi0/0/1: 10.0.0.1/30 | 1.1.1.1 | 192.168.10.0, 192.168.20.0, 192.168.30.0, 10.0.0.0/30 |
 | ISP-R1 | Gi0/0/0: 10.0.0.2/30, Gi0/0/1: 10.0.0.5/30, Gi0/0/2: 203.0.113.1/24 | 2.2.2.2 | 10.0.0.0/30, 10.0.0.4/30, 203.0.113.0/24 |
 | BR-R1 | Gi0/0/1: 10.0.0.6/30 | 3.3.3.3 | 192.168.40.0, 192.168.50.0, 10.0.0.4/30 |
+
+## NAT (HQ-R1)
+PAT (NAT overload): PCs share the router's WAN address when reaching the Internet server. Traffic between the company's own sites is not translated. BR-R1 uses the same commands with its own interfaces (Gi0/0/0.40 and .50 inside, Gi0/0/1 outside).
+
+HQ-R1
+```
+int gi0/0/0.10
+ ip nat inside
+ exit
+int gi0/0/0.20
+ ip nat inside
+ exit
+int gi0/0/0.30
+ ip nat inside
+ exit
+int gi0/0/1
+ ip nat outside
+ exit
+ip access-list extended NAT-TRAFFIC
+ deny ip 192.168.0.0 0.0.255.255 192.168.0.0 0.0.255.255
+ permit ip 192.168.0.0 0.0.255.255 any
+ exit
+ip nat inside source list NAT-TRAFFIC int gi0/0/1 overload
+```
+
+| Command | Description |
+|---|---|
+| `ip nat inside` | Marks an interface as facing the company's own network |
+| `ip nat outside` | Marks an interface as facing the ISP |
+| `ip access-list extended NAT-TRAFFIC` | Creates a named list of rules that decides which traffic NAT translates |
+| `deny ip 192.168.0.0 0.0.255.255 192.168.0.0 0.0.255.255` | Do not translate traffic from a private network to another private network (between the company's sites) |
+| `permit ip 192.168.0.0 0.0.255.255 any` | Translate traffic from private networks to anywhere else |
+| `ip nat inside source list NAT-TRAFFIC interface gi0/0/1 overload` | Replaces the private address of matching traffic with the router's `Gi0/0/1` address. `overload` lets many devices share that one address |
+| `show ip nat translations` | Lists the active translations |
+| `show ip nat statistics` | Shows the inside and outside interfaces and translation counts |
+| `clear ip nat translation *` | Removes all current translations |
