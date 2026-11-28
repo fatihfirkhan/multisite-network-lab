@@ -43,4 +43,12 @@ This document contains definitions of technical terms encountered while building
 | Inside local | A device's real private address |
 | Inside global | The address the outside world sees for that device |
 | Inside / outside interface | Inside faces the company's own network. Outside faces the ISP |
+
+## ACLs
+| Term | Description |
+|---|---|
 | ACL | Access Control List; a list of permit and deny rules that match traffic |
+| Inbound (in) | The ACL checks traffic as it enters the router through that interface |
+| Implicit deny | The invisible rule at the end of every ACL that drops traffic matching no rule |
+| Stateless | The ACL checks each packet on its own and does not remember connections, so replies are filtered like new traffic |
+| Port | A number that identifies a service on a device, such as 80 for web or 67 and 68 for DHCP |
