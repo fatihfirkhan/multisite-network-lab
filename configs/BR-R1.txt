@@ -1,7 +1,7 @@
-BR-R1#show running-conf
+BR-R1#show running-config
 Building configuration...
 
-Current configuration : 1517 bytes
+Current configuration : 1773 bytes
 !
 version 17.6.3
 service timestamps log datetime msec
@@ -58,15 +58,18 @@ interface GigabitEthernet0/0/0.40
  description Staff VLAN
  encapsulation dot1Q 40
  ip address 192.168.40.1 255.255.255.0
+ ip nat inside
 !
 interface GigabitEthernet0/0/0.50
  description Servers VLAN
  encapsulation dot1Q 50
  ip address 192.168.50.1 255.255.255.0
+ ip nat inside
 !
 interface GigabitEthernet0/0/1
  description Link to ISP-R1
  ip address 10.0.0.6 255.255.255.252
+ ip nat outside
  duplex auto
  speed auto
 !
@@ -89,11 +92,15 @@ router ospf 1
  network 192.168.50.0 0.0.0.255 area 0
  network 10.0.0.4 0.0.0.3 area 0
 !
+ip nat inside source list NAT-TRAFFIC interface GigabitEthernet0/0/1 overload
 ip classless
 !
 ip flow-export version 9
 !
 !
+ip access-list extended NAT-TRAFFIC
+ deny ip 192.168.0.0 0.0.255.255 192.168.0.0 0.0.255.255
+ permit ip 192.168.0.0 0.0.255.255 any
 !
 banner motd ^CAuthorized access only^C
 !
