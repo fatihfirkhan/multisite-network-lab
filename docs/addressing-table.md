@@ -76,3 +76,13 @@
 |---|---|---|---|
 | HQ-R1 | Gi0/0/0.10, .20, .30 | Gi0/0/1 | 10.0.0.1 |
 | BR-R1 | Gi0/0/0.40, .50 | Gi0/0/1 | 10.0.0.6 |
+
+## Access Control Lists
+| Router | ACL | Applied to | Direction | Purpose |
+|---|---|---|---|---|
+| HQ-R1 | GUEST-IN | Gi0/0/0.30 (Guest VLAN) | in | Isolate Guests from company networks |
+| BR-R1 | BR-STAFF-IN | Gi0/0/0.40 (Branch Staff VLAN) | in | Allow servers and internet, block other workstations |
+
+**Policy**
+- Guests are isolated from all company networks because they are untrusted devices, but can reach the internet.
+- Branch workstations can reach servers and the internet, but not HQ workstations or the guest network, to limit how far a compromised PC could spread.
