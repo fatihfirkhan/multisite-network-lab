@@ -1,7 +1,7 @@
 HQ-R1#show running-config
 Building configuration...
 
-Current configuration : 2144 bytes
+Current configuration : 2392 bytes
 !
 version 17.6.3
 service timestamps log datetime msec
@@ -76,6 +76,7 @@ interface GigabitEthernet0/0/0.30
  encapsulation dot1Q 30
  ip address 192.168.30.1 255.255.255.0
  ip nat inside
+ ip access-group GUEST-IN in
 !
 interface GigabitEthernet0/0/1
  description Link to ISP-R1
@@ -113,6 +114,11 @@ ip flow-export version 9
 ip access-list extended NAT-TRAFFIC
  deny ip 192.168.0.0 0.0.255.255 192.168.0.0 0.0.255.255
  permit ip 192.168.0.0 0.0.255.255 any
+ip access-list extended GUEST-IN
+ permit udp any eq bootpc any eq bootps
+ permit ip 192.168.30.0 0.0.0.255 host 192.168.30.1
+ deny ip 192.168.30.0 0.0.0.255 192.168.0.0 0.0.255.255
+ permit ip 192.168.30.0 0.0.0.255 any
 !
 banner motd ^CAuthorized access only^C
 !
